@@ -1,191 +1,31 @@
-import customtkinter as ctk
+from pathlib import Path
 import pandas as pd
-import joblib
-import os
-import customtkinter as ctk
 
-from utils import *
-
-class AdvisorPage(ctk.CTkFrame):
-
-    def __init__(self, master):
-
-        super().__init__(master)
-
-        self.pack(fill="both", expand=True)
-
-        self.load_data()
-
-        self.load_model()
-
-        self.build_ui()
-
-    # ==================================
-
-    def load_data(self):
-
-        try:
-
-            self.df = pd.read_csv(
-                "data/Personal_Finance_Dataset.csv"
-            )
-
-        except:
-
-            self.df = pd.DataFrame()
-
-    # ==================================
-
-    def load_model(self):
-
-        self.model = None
-
-        if os.path.exists("model/spending_model.pkl"):
-
-            self.model = joblib.load(
-                "model/spending_model.pkl"
-            )
-
-    # ==================================
-
-    def build_ui(self):
-
-        title = ctk.CTkLabel(
-
-            self,
-
-            text="AI Advisor",
-
-            font=("Segoe UI",30,"bold")
-
-        )
-
-        title.pack(anchor="w", padx=20, pady=(20,10))
-
-        self.text = ctk.CTkTextbox(
-
-            self,
-
-            font=("Segoe UI",16)
-
-        )
-
-        self.text.pack(
-
-            fill="both",
-
-            expand=True,
-
-            padx=20,
-
-            pady=20
-
-        )
-
-        self.generate()
-
-    # ==================================
-
-    def generate(self):
-
-        self.text.delete("1.0","end")
-
-        if self.df.empty:
-
-            self.text.insert(
-
-                "end",
-
-                "Không có dữ liệu."
-
-            )
-
-            return
-
-        income = self.df[
-
-            self.df["Type"]=="Income"
-
-        ]["Amount"].sum()
-
-        expense = self.df[
-
-            self.df["Type"]=="Expense"
-
-        ]["Amount"].sum()
-
-        balance = income-expense
-
-        category = self.df.groupby(
-
-            "Category"
-
-        )["Amount"].sum().idxmax()
-
-        amount = self.df.groupby(
-
-            "Category"
-
-        )["Amount"].sum().max()
-
-        advice = f"""
-
-FINANCE AI REPORT
-
-=====================================
-
-Tổng thu nhập:
-
-{income:,.0f} đ
-
--------------------------------------
-
-Tổng chi tiêu:
-
-{expense:,.0f} đ
-
--------------------------------------
-
-Số dư hiện tại:
-
-{balance:,.0f} đ
-
--------------------------------------
-
-Danh mục chi nhiều nhất:
-
-{category}
-
-Giá trị:
-
-{amount:,.0f} đ
-
-=====================================
-
-Đề xuất
-
-• Hạn chế chi tiêu cho danh mục trên.
-
-• Nên dành khoảng 20% thu nhập để tiết kiệm.
-
-• Theo dõi chi tiêu hằng tuần.
-
-• Tránh phát sinh các khoản mua sắm không cần thiết.
-
-• Duy trì số dư dương mỗi tháng.
-
-"""
-
-        self.text.insert(
-
-            "end",
-
-            advice
-
-        )
-
-        self.text.configure(
-
-            state="disabled"
-
-        )
+# Đọc dữ liệu
+current_folder = Path(__file__).parent
+csv_file = current_folder / "personal_finance_dataset_8000_extended.csv"
+df = pd.read_csv(csv_file)
+
+print("===== PERSONAL FINANCIAL ADVISOR =====\n")
+
+# Danh mục chi tiêu nhiều nhất
+top_category = df["Category"].value_counts().idxmax()
+
+print(f"Danh mục chi tiêu nhiều nhất: {top_category}")
+
+if top_category == "Online Shopping":
+    print("Lời khuyên: Bạn nên kiểm soát việc mua sắm trực tuyến để tránh vượt ngân sách.")
+elif top_category == "Food":
+    print("Lời khuyên: Hãy lập kế hoạch ăn uống hợp lý để tiết kiệm chi phí.")
+elif top_category == "Entertainment":
+    print("Lời khuyên: Có thể giảm một phần chi phí giải trí nếu muốn tiết kiệm.")
+else:
+    print("Lời khuyên: Hãy theo dõi các khoản chi tiêu thường xuyên.")
+
+# Phương thức thanh toán phổ biến
+top_payment = df["PaymentMethod"].value_counts().idxmax()
+print(f"\nPhương thức thanh toán được sử dụng nhiều nhất: {top_payment}")
+
+# Thời điểm giao dịch nhiều nhất
+top_time = df["TimeOfDay"].value_counts().idxmax()
+print(f"Thời gian giao dịch nhiều nhất: {top_time}")

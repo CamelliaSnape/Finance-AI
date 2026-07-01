@@ -1,161 +1,36 @@
-import customtkinter as ctk
-
-from utils import *
-from tkinter import filedialog, messagebox
+from pathlib import Path
 import pandas as pd
-from database import Database
 
+# Đọc dữ liệu
+current_folder = Path(__file__).parent
+csv_file = current_folder / "personal_finance_dataset_8000_extended.csv"
+df = pd.read_csv(csv_file)
 
-class ReportPage(ctk.CTkFrame):
+print("========== BÁO CÁO PHÂN TÍCH DỮ LIỆU ==========\n")
 
-    def __init__(self, master, user_id):
+print(f"Tổng số giao dịch: {len(df)}")
+print(f"Tổng giá trị giao dịch: {df['Amount'].sum():,.2f}")
+print(f"Giá trị trung bình mỗi giao dịch: {df['Amount'].mean():,.2f}")
 
-        super().__init__(master)
+print("\n--- Phân tích Category ---")
+print(df["Category"].value_counts())
 
-        self.db = Database()
-        self.user_id = user_id
+print("\n--- Phân tích Payment Method ---")
+print(df["PaymentMethod"].value_counts())
 
-        self.create_ui()
+print("\n--- Phân tích Time Of Day ---")
+print(df["TimeOfDay"].value_counts())
 
-    # ==========================================
+print("\n========== INSIGHT ==========")
 
-    def create_ui(self):
+print("""
+1. Bộ dữ liệu gồm 8000 giao dịch và không có dữ liệu bị thiếu.
 
-        title = ctk.CTkLabel(
-            self,
-            text="Xuất báo cáo",
-            font=("Segoe UI",30,"bold")
-        )
+2. Online Shopping là danh mục có số lượng giao dịch nhiều nhất.
 
-        title.pack(pady=20)
+3. Net Banking và Credit Card là hai phương thức thanh toán được sử dụng nhiều nhất.
 
-        button_frame = ctk.CTkFrame(self)
+4. Buổi tối (Evening) là thời điểm phát sinh nhiều giao dịch nhất.
 
-        button_frame.pack(pady=20)
-
-        ctk.CTkButton(
-            button_frame,
-            text="Xuất CSV",
-            width=180,
-            command=self.export_csv
-        ).grid(row=0,column=0,padx=10)
-
-        ctk.CTkButton(
-            button_frame,
-            text="Xuất Excel",
-            width=180,
-            command=self.export_excel
-        ).grid(row=0,column=1,padx=10)
-
-        ctk.CTkTextbox(
-            self,
-            height=250
-        ).pack(
-            fill="both",
-            expand=True,
-            padx=20,
-            pady=20
-        )
-
-    # ==========================================
-
-    def get_dataframe(self):
-
-        data = self.db.get_transactions(self.user_id)
-
-        columns = [
-
-            "ID",
-
-            "User ID",
-
-            "Date",
-
-            "Category",
-
-            "Type",
-
-            "Amount",
-
-            "Description"
-
-        ]
-
-        return pd.DataFrame(
-            data,
-            columns=columns
-        )
-
-    # ==========================================
-
-    def export_csv(self):
-
-        df = self.get_dataframe()
-
-        path = filedialog.asksaveasfilename(
-
-            defaultextension=".csv",
-
-            filetypes=[
-
-                ("CSV File","*.csv")
-
-            ]
-
-        )
-
-        if path:
-
-            df.to_csv(
-
-                path,
-
-                index=False,
-
-                encoding="utf-8-sig"
-
-            )
-
-            messagebox.showinfo(
-
-                "Thông báo",
-
-                "Xuất CSV thành công."
-
-            )
-
-    # ==========================================
-
-    def export_excel(self):
-
-        df = self.get_dataframe()
-
-        path = filedialog.asksaveasfilename(
-
-            defaultextension=".xlsx",
-
-            filetypes=[
-
-                ("Excel File","*.xlsx")
-
-            ]
-
-        )
-
-        if path:
-
-            df.to_excel(
-
-                path,
-
-                index=False
-
-            )
-
-            messagebox.showinfo(
-
-                "Thông báo",
-
-                "Xuất Excel thành công."
-
-            )
+5. Dữ liệu phân bố khá đồng đều giữa các nhóm nên phù hợp để phân tích và huấn luyện mô hình AI.
+""")
