@@ -1,7 +1,7 @@
 import joblib
 import numpy as np
 
-def get_prediction(income, age, model_path='model.pkl'):
+def predict_spending(income, age, model_path='model.pkl'):
     try:
         model = joblib.load(model_path)
         input_data = np.array([[income, age]])
@@ -10,4 +10,8 @@ def get_prediction(income, age, model_path='model.pkl'):
     except FileNotFoundError:
         return "Error: model.pkl file not found."
     except Exception as e:
-        return f"Error: {str(e)}"
+        return f"Error occurred: {str(e)}"
+
+if __name__ == "__main__":
+    result = predict_spending(50, 30)
+    print(f"Test prediction result: {result}")
