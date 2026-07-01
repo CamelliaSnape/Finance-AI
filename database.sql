@@ -98,3 +98,37 @@ has_loan,
 loan_amount_usd,
 credit_score
 );
+CREATE TABLE budget(
+
+    budget_id INT AUTO_INCREMENT PRIMARY KEY,
+
+    user_id INT,
+
+    month INT,
+
+    year INT,
+
+    budget_amount DECIMAL(12,2),
+
+    FOREIGN KEY(user_id)
+    REFERENCES users(user_id)
+);
+CREATE TABLE ai_prediction(
+
+    prediction_id INT AUTO_INCREMENT PRIMARY KEY,
+
+    user_id INT,
+
+    predicted_expense DECIMAL(12,2),
+
+    spending_level ENUM(
+        'Saver',
+        'Normal',
+        'Overspending'
+    ),
+
+    predict_date DATE,
+
+    FOREIGN KEY(user_id)
+    REFERENCES users(user_id)
+);
