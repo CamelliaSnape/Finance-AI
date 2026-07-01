@@ -79,7 +79,7 @@ CREATE TABLE transactions (
     FOREIGN KEY(user_id)
         REFERENCES users(user_id)
 );
-LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/finance_dataset_with_user_info.csv'
+LOAD DATA INFILE 'C:/ProgramFiles/MySQL/MySQL Server 8.0/Uploads/finance_dataset_with_user_info.csv'
 INTO TABLE users
 FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
