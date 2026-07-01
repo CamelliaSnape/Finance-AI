@@ -1,5 +1,4 @@
 DROP DATABASE IF EXISTS finance_ai;
-DROP DATABASE IF EXISTS finance_ai;
 CREATE DATABASE finance_ai;
 USE finance_ai;
 
@@ -79,4 +78,23 @@ CREATE TABLE transactions (
 
     FOREIGN KEY(user_id)
         REFERENCES users(user_id)
+);
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/finance_dataset_with_user_info.csv'
+INTO TABLE users
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(
+user_id,
+age,
+gender,
+education_level,
+employment_status,
+job_title,
+monthly_income_usd,
+savings_usd,
+has_loan,
+loan_amount_usd,
+credit_score
 );
