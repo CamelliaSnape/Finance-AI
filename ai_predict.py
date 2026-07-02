@@ -1,17 +1,12 @@
-import joblib
-import numpy as np
+import prediction
 
-def predict_spending(income, age, model_path='model.pkl'):
-    try:
-        model = joblib.load(model_path)
-        input_data = np.array([[income, age]])
-        prediction = model.predict(input_data)
-        return prediction[0]
-    except FileNotFoundError:
-        return "Error: model.pkl file not found."
-    except Exception as e:
-        return f"Error occurred: {str(e)}"
+def predict_spending(age, gender, education_level, employment_status, job_title, 
+                    monthly_income_usd, savings_usd, has_loan, loan_amount_usd):
+    return prediction.get_prediction(
+        age, gender, education_level, employment_status, job_title,
+        monthly_income_usd, savings_usd, has_loan, loan_amount_usd
+    )
 
 if __name__ == "__main__":
-    result = predict_spending(50, 30)
-    print(f"Test prediction result: {result}")
+    result = predict_spending(30, 'Male', 'Bachelor', 'Employed', 'Engineer', 2500, 10000, 'No', 0)
+    print(f"Test result: {result}")
